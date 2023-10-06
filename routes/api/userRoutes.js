@@ -1,3 +1,5 @@
+const router = require('sequelize').router;
+
 const User = require("../../models/user")
 
 const {addUser, getUser} = requre("../../controllers/userController.js")
@@ -10,3 +12,4 @@ Router.route("/").get(getUsers).post(addUser)
 
 
 // then User.findOneAndUpdate() so tha you can ADD the new thought Id to the user's thoughts array
+module.exports = router

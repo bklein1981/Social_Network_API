@@ -14,25 +14,25 @@ const userSchema = new Schema({
         type: String,
         required: true,
         unique: true,
-        match: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
+        match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
     },
     //thoughts
     thoughts: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Thought'
+            ref: 'thought'
         }
     ],
     //friends
     friends: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'user'
         }
     ]
 })
 
-//creeate User model
-const User = model('User', userSchema);
+//create User model
+const User = model('user', userSchema);
 
 module.exports = User;

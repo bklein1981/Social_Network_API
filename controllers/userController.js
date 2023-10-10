@@ -60,7 +60,7 @@ module.exports = {
     async deleteUser(req, res) {
         console.log(`Delete user DELETE request received`);
         try {
-            let user = await User.findByIdAndDelete(req.params.userId)
+            let user = await User.findByIdAndDelete(req.params.userId);
             if (!user) {
                 return res.status(404).json({ message: 'No user with that ID' });
             }
@@ -70,5 +70,60 @@ module.exports = {
             console.log(err);
             return res.status(500).json(err);
         }
+    },
+
+    //Add a friend to the friends list
+    async addFriend(req, res) {
+        console.log(`New friend POST request received`);
+        const userId = req.params.userId;
+        const friendId = req.params.friendId;
+
+        try {
+            const user = await User.findById(userId);
+            //checks if user id is valid
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            //checks if friend id is valid
+            if (!friendId) {
+                return res.status(404).json({ message: 'Friend not found' });
+            }
+            //checks if friends list already includes the friendId and if not, pushes the friendId to the friends list
+            if (!user.friends.includes(friendId)) {
+                user.friends.push(friendId);
+                await user.save();
+            }
+            return res.status(200).json(user)
+
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json(err);
+        }
+    },
+
+    //remove a friend from the friends list
+    async removeFriend(req, res) {
+        const userId = req.params.userId;
+        const friendId = req.params.friendId;
+
+        //checks if user id is valid
+        if (!userId || !friendId) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        try {
+            const user = await User.findOneAndUpdate(
+                { _id: userId },
+                { friends: friendId },
+                { $pull: { friends: friendId } },
+                { new: true }
+            );
+
+            return res.status(200).json(user)
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json(err);
+        }
     }
+
 }

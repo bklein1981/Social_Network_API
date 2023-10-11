@@ -1,4 +1,4 @@
-const { Thought } = require('../models')
+const { Thought, User } = require('../models')
 
 module.exports = {
     //Get All Thoughts
@@ -33,6 +33,14 @@ module.exports = {
         console.log(`Create new thoughts POST request received`)
         try {
             let thoughts = await Thought.create(req.body);
+            //username from the body
+            let username = thoughts.username
+            //update user with thoughts via username
+            let updatedUser = await User.findOneAndUpdate({ userName: username }, { $addToSet: {
+                thoughts: thoughts._id
+            } },{ new: true }  )
+            //send thought id to user model
+            console.log(updatedUser)
             return res.json(thoughts);
         } catch(err) {
             console.log(err);

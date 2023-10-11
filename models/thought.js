@@ -21,12 +21,11 @@ const thoughtSchema = new Schema(
         //createdAt
         createdAt: {
             type: Date,
-            get: function () {          
-              return date.format(this.createdAt, 'M-D-YYYY h:m A');
+            default: new Date(),
+            get: function (savedDate) {   
+                    
+              return date.format(savedDate, 'ddd, MMM DD YYYY');
             },
-            set: function (value) {
-                return date.parse(value, 'M-D-YYYY h:m A');
-            }
           },
         //reaction
         reactions: [reactionSchema]
@@ -34,6 +33,7 @@ const thoughtSchema = new Schema(
     {
         toJSON: {
             virtuals: true,
+            getters: true
         },
         id: false,
     }

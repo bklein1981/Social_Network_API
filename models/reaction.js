@@ -1,12 +1,14 @@
 const { Schema, Types } = require('mongoose');
+const date = require('date-and-time');
 
 //create reaction schema
 const reactionSchema = new Schema({
     //reactionId
     reactionId: {
-        type: Types.ObjectId,
-        default: () => new Schema.Types.ObjectId(),
+        type: Schema.Types.ObjectId,
+        default: () => new Types.ObjectId(),
     },
+    //reaction
     reactionBody: {
         type: String,
         required: true,
@@ -20,10 +22,18 @@ const reactionSchema = new Schema({
     //createdAt
     createdAt: {
         type: Date,
-        default: Date.now
+        default: new Date(),
+        get: function (savedDate) {
+            return date.format(savedDate, 'M-D-YYYY h:m A');
+        },
     },
-    //reaction
-})
+},
+    {
+        toJSON: {
+            getters: true,
+        },
+        id: false,
+    })
 
 module.exports = reactionSchema
 

@@ -7,14 +7,14 @@ module.exports = {
         try {
             let thoughts = await Thought.find();
             return res.json(thoughts);
-        }catch(err) {
+        } catch (err) {
             console.log(err);
             return res.status(500).json(err);
         }
     },
 
-     //GET Single Thought
-     async getSingleThought(req, res) {
+    //GET Single Thought
+    async getSingleThought(req, res) {
         console.log(`Get single thought GET request received`);
         try {
             let thought = await Thought.findById(req.params.thoughtId);
@@ -36,13 +36,14 @@ module.exports = {
             //username from the body
             let username = thoughts.username
             //update user with thoughts via username
-            let updatedUser = await User.findOneAndUpdate({ userName: username }, { $addToSet: {
-                thoughts: thoughts._id
-            } },{ new: true }  )
+            let updatedUser = await User.findOneAndUpdate({ userName: username }, {
+                $addToSet: {
+                    thoughts: thoughts._id
+                }
+            }, { new: true })
             //send thought id to user model
-            console.log(updatedUser)
             return res.json(thoughts);
-        } catch(err) {
+        } catch (err) {
             console.log(err);
             return res.status(500).json(err);
         }
@@ -72,6 +73,56 @@ module.exports = {
                 return res.status(404).json({ message: 'No thought with that ID' });
             }
             return res.json(thought);
+
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json(err);
+        }
+    },
+
+    //Create a new Reaction
+    async newReaction(req, res) {
+        console.log(`New reaction POST request received`);
+        const thoughtId = req.params.thoughtId
+        const reaction = req.body
+
+        try {
+            let thought = await Thought.findByIdAndUpdate(
+                { _id: thoughtId },
+                { $addToSet: { reactions: reaction } },
+                { runValidators: true, new: true }
+            );
+
+            if (!thought) {
+                return res
+                    .status(404)
+                    .json({ message: 'No thoughts found' });
+            }
+            return res.status(200).json(thought);
+
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json(err);
+        }
+    },
+
+    async deleteReaction(req, res) {
+        console.log(`New reaction DELETE request received`);
+        const thoughtId = req.params.thoughtId
+
+        try {
+            let thought = await Thought.findByIdAndUpdate(
+                { _id: thoughtId },
+                { $pull: { reactions: { reactionId: req.params.reactionId } } },
+                { runValidators: true, new: true }
+            );
+
+            if (!thought) {
+                return res
+                    .status(404)
+                    .json({ message: 'No thoughts found' });
+            }
+            return res.status(200).json(thought);
 
         } catch (err) {
             console.log(err);

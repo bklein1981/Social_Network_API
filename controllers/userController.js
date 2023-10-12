@@ -6,7 +6,6 @@ module.exports = {
         console.log(`Get all users GET request received`);
         try {
             let users = await User.find()
-                .populate({ path: 'thoughts', model: Thought })
             return res.json(users);
         } catch (err) {
             console.log(err);
@@ -18,7 +17,9 @@ module.exports = {
     async getSingleUser(req, res) {
         console.log(`Get single user GET request received`);
         try {
-            let user = await User.findById(req.params.userId);
+            let user = await User.findById(req.params.userId)
+            .populate({ path: 'thoughts', model: Thought })
+            .populate( 'friends' );
             if (!user) {
                 return res.status(404).json({ message: 'No user with that ID' });
             }
@@ -64,6 +65,7 @@ module.exports = {
             if (!user) {
                 return res.status(404).json({ message: 'No user with that ID' });
             }
+            let thoughts = await Thought.deleteMany()
             return res.json(user);
 
         } catch (err) {

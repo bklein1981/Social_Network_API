@@ -24,7 +24,7 @@ const thoughtSchema = new Schema(
             default: new Date(),
             get: function (savedDate) {   
                     
-              return date.format(savedDate, 'ddd, MMM DD YYYY');
+              return date.format(savedDate, 'M-D-YYYY h:m A');
             },
           },
         //reaction

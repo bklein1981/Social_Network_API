@@ -18,8 +18,7 @@ module.exports = {
         console.log(`Get single user GET request received`);
         try {
             let user = await User.findById(req.params.userId)
-            .populate({ path: 'thoughts.thoughtId', model: Thought })
-            .populate( 'friends' );
+           
             if (!user) {
                 return res.status(404).json({ message: 'No user with that ID' });
             }

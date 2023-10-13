@@ -36,11 +36,11 @@ module.exports = {
             //username from the body
             let username = thoughts.username
             //update user with thoughts via username
-            let updatedUser = await User.findOneAndUpdate({ userName: username }, {
-                $addToSet: {
-                    thoughts: thoughts._id
-                }
-            }, { new: true })
+           await User.findOneAndUpdate(
+                { userName: username },
+                { $addToSet: { thoughts: thoughts._id } },
+                { new: true }
+            )
             //send thought id to user model
             return res.json(thoughts);
         } catch (err) {

@@ -40,31 +40,6 @@ const userSchema = new Schema(
     }
 );
 
-userSchema.pre('deleteMany', { query: true }, async function (next) {
-    const query = this.getQuery();
-
-    console.log('Query object:', query);
-
-    if (query._id) {
-        try {
-            const user = await this.model.findById(query._id);
-
-            console.log('User ID:', query._id);
-
-            if (user) {
-                const thoughtIds = user.thoughts.map(thought => thought._id);
-
-                console.log('Thought IDs:', thoughtIds);
-                
-                await Thought.deleteMany({ _id: { $in: thoughtIds } });
-            }
-        } catch (err) {
-            console.error('An error occurred', err);
-            throw err;
-        }
-    }
-});
-
 userSchema.virtual('friendCount').get(function () {
     return this.friends.length;
 });

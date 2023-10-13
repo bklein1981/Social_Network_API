@@ -18,7 +18,7 @@ module.exports = {
         console.log(`Get single user GET request received`);
         try {
             let user = await User.findById(req.params.userId)
-            .populate({ path: 'thoughts', model: Thought })
+            .populate({ path: 'thoughts.thoughtId', model: Thought })
             .populate( 'friends' );
             if (!user) {
                 return res.status(404).json({ message: 'No user with that ID' });
@@ -60,12 +60,13 @@ module.exports = {
     //DELETE User by Id
     async deleteUser(req, res) {
         console.log(`Delete user DELETE request received`);
+        const userId = req.params.userId
         try {
-            let user = await User.findByIdAndDelete(req.params.userId);
+            let user = await User.findByIdAndDelete(req.params.userId,
+                );
             if (!user) {
                 return res.status(404).json({ message: 'No user with that ID' });
             }
-            let thoughts = await Thought.deleteMany()
             return res.json(user);
 
         } catch (err) {
